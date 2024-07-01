@@ -135,3 +135,62 @@ fun LoginButton(loginEnable: Boolean) {
         Text(text = "Log in")
     }
 }
+
+@Composable
+fun LoginDivider() {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        HorizontalDivider(
+            Modifier
+                .background(Color(0xFFF9F9F9))
+                .height(1.dp)
+                .weight(1f)
+        )
+        Text(
+            text = "OR",
+            modifier = Modifier.padding(horizontal = 18.dp),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFFB5B5B5)
+        )
+        HorizontalDivider(
+            Modifier
+                .background(Color(0xFFF9F9F9))
+                .height(1.dp)
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+fun SocialLogin() {
+    Row(
+        Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.fb),
+            contentDescription = "Facebook logo",
+            modifier = Modifier.size(18.dp)
+        )
+        Text(
+            text = "Continue as Nathan Pinto",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF4EA8E9),
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+    }
+}
+
+@Composable
+fun Footer(modifier: Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        HorizontalDivider(
+            Modifier
+                .background(Color(0xFFF9F9F9))
+                .height(1.dp)
+                .fillMaxWidth()
+        )
+    }
+}
