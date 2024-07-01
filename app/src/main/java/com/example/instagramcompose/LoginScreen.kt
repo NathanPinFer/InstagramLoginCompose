@@ -1,6 +1,7 @@
 package com.example.instagramcompose
 
 import android.app.Activity
+import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,13 +15,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,8 +40,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+fun enableLogin(email: String, password: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length >= 8
+}
 
 @Composable
 fun LoginScreen() {
@@ -74,9 +89,15 @@ fun Body(modifier: Modifier) {
     Column(modifier = modifier) {
         Logo(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
-        Email(email) { email = it }
+        Email(email) {
+            email = it
+            isLoginEnable = enableLogin(email, password)
+        }
         Spacer(modifier = Modifier.size(4.dp))
-        Password(password) { password = it }
+        Password(password) {
+            password = it
+            isLoginEnable = enableLogin(email, password)
+        }
         Spacer(modifier = Modifier.size(8.dp))
         ForgotPassword(Modifier.align(Alignment.End))
         Spacer(modifier = Modifier.size(16.dp))
@@ -103,17 +124,52 @@ fun Email(email: String, onTextChanged: (String) -> Unit) {
     TextField(
         value = email,
         onValueChange = { onTextChanged(it) },
-        label = { Text(text = "Phone number, username or email", fontSize = 12.sp) },
+        placeholder = { Text(text = "Phone number, username or email", fontSize = 12.sp) },
+        maxLines = 1,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = Color(0xFFB2B2B2),
+            unfocusedContainerColor = Color(0xFFFAFAFA),
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+        ),
         modifier = Modifier.fillMaxWidth()
     )
 }
 
 @Composable
 fun Password(password: String, onPasswordChanged: (String) -> Unit) {
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+
     TextField(
         value = password,
         onValueChange = { onPasswordChanged(it) },
-        label = { Text(text = "Password", fontSize = 12.sp) },
+        placeholder = { Text(text = "Password", fontSize = 12.sp) },
+        maxLines = 1,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        trailingIcon = {
+            val image = if (passwordVisibility) {
+                Icons.Filled.VisibilityOff
+            } else {
+                Icons.Filled.Visibility
+            }
+            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                Icon(imageVector = image, contentDescription = "Show or hide password")
+            }
+        },
+        visualTransformation = if (passwordVisibility) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = Color(0xFFB2B2B2),
+            unfocusedContainerColor = Color(0xFFFAFAFA),
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -131,7 +187,18 @@ fun ForgotPassword(modifier: Modifier) {
 
 @Composable
 fun LoginButton(loginEnable: Boolean) {
-    Button(onClick = { }, enabled = loginEnable, modifier = Modifier.fillMaxWidth()) {
+    Button(
+        onClick = { },
+        enabled = loginEnable,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(5.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF4EA8E9),
+            contentColor = Color.White,
+            disabledContainerColor = Color(0xFF78C8F9),
+            disabledContentColor = Color.White
+        )
+    ) {
         Text(text = "Log in")
     }
 }
@@ -192,5 +259,41 @@ fun Footer(modifier: Modifier) {
                 .height(1.dp)
                 .fillMaxWidth()
         )
+        Spacer(modifier = Modifier.size(24.dp))
+        SignUp()
+        Spacer(modifier = Modifier.size(18.dp))
     }
 }
+
+@Composable
+fun SignUp() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(), horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Don't have an account?",
+            fontSize = 12.sp,
+            color = Color(0xFFB5B5B5),
+            fontWeight = FontWeight.Medium
+        )
+        Text(
+            text = "Sign Up.",
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF4EA8E9),
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
